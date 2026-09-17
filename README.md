@@ -189,6 +189,19 @@ CMD → executes when the container starts
 docker build -t docker-testapp .
 ```
 
+This creates the Docker image:
+
+```text
+docker-testapp
+```
+
+### Run the Docker Image
+```bash
+docker run -d -p 5050:5050
+```
+---
+
+### BUT YOU CAN GET THE ERROR IN MONGODB CONNECTION
 ### MongoDB Connection
 
 Before Dockerizing:
@@ -207,13 +220,25 @@ const MONGO_URL = "mongodb://admin:qwerty@mongo:27017";
 
 Here, `mongo` is the name of the MongoDB container.
 
-### Run the Node.js Container
+### Run the MongoDB Container
+
+MongoDB must be running before starting the Node.js container:
 
 ```bash
-docker run -d -p 5050:5050 --network mongo-network docker-testapp
+docker run -d -p 27017:27017 --name mongo --network mongo-network -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=qwerty mongo
 ```
 
+### Create and Run the Node.js Container
+
+```bash
+docker run -d -p 5050:5050 --network mongo-network --name node-app docker-testapp
+```
+
+This creates and starts the Node.js container from the `docker-testapp` image.
+
 ### Test the Application
+
+Open:
 
 ```text
 http://localhost:5050
@@ -227,6 +252,10 @@ http://localhost:5050/getUsers
 
 ### Key Takeaway
 
-The Node.js application is now running inside a Docker container and communicating with MongoDB through the shared `mongo-network`.
+```text
+Dockerfile → Docker Image → Container → Node.js App
+```
+
+The Node.js container communicates with the MongoDB container through the shared `mongo-network`.
 
 

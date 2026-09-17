@@ -75,3 +75,68 @@ Mongo Express provides a web interface to view and manage the MongoDB databases.
 Using Mongo Express, we can view databases, collections, and documents stored in MongoDB.
 
 ![MongoDB Collection](assets/step-5.png)
+
+Par itni mehanat kyu karni hai, use Docker Compose Bro!
+# Docker Compose
+
+Docker Compose is used to **define and run multiple Docker containers** using a YAML file.
+
+Instead of writing multiple long `docker run` commands, we can define the setup once in:
+
+```text
+docker-compose.yml
+```
+
+## Why Docker Compose?
+
+It makes multi-container applications:
+
+- Easier to configure
+- Faster to start
+- Easier to reproduce
+
+## Example
+
+For our MongoDB + Mongo Express setup:
+
+```yaml
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: <your-password>
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: <your-password>
+      ME_CONFIG_MONGODB_URL: mongodb://admin:<your-password>@mongo:27017/?authSource=admin
+```
+
+Here, `mongo` is the service name used by Mongo Express to connect to MongoDB.
+
+## Important Commands
+
+### Start
+
+```bash
+docker compose -f fileName.yaml up -d
+```
+
+### Stop
+
+```bash
+docker compose -f fileName.yaml down
+```
+
+
+## Key Takeaway
+
+**Docker Compose = define multiple containers in YAML + manage them with simple commands.**
+

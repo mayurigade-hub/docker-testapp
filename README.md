@@ -76,6 +76,8 @@ Using Mongo Express, we can view databases, collections, and documents stored in
 
 ![MongoDB Collection](assets/step-5.png)
 
+---
+
 Par itni mehanat kyu karni hai, use Docker Compose Bro!
 # Docker Compose
 
@@ -139,4 +141,92 @@ docker compose -f fileName.yaml down
 ## Key Takeaway
 
 **Docker Compose = define multiple containers in YAML + manage them with simple commands.**
+
+---
+
+**NEXT IMPORTANT TOPIC**
+## Dockerizing the Node.js Application
+
+Dockerizing means packaging the Node.js application so it can run inside a Docker container.
+
+### Dockerfile
+
+Create a file named `Dockerfile` in the project root:
+
+```dockerfile
+FROM node
+
+ENV MONGO_DB_USERNAME=admin \
+    MONGO_DB_PWD=qwerty
+
+RUN mkdir -p testapp
+
+COPY . /testapp
+
+CMD ["node", "/testapp/server.js"]
+```
+
+### Dockerfile Process
+
+```text
+FROM  → Get Node.js environment
+ENV   → Set environment variables
+RUN   → Create /testapp directory
+COPY  → Copy project files into /testapp
+CMD   → Start server.js
+```
+
+Important:
+
+```text
+RUN → executes during image build
+CMD → executes when the container starts
+```
+
+### Build the Docker Image
+
+```bash
+docker build -t docker-testapp .
+```
+
+### MongoDB Connection
+
+Before Dockerizing:
+
+```javascript
+const MONGO_URL = "mongodb://admin:qwerty@localhost:27017";
+```
+
+After Dockerizing, `localhost` refers to the Node.js container itself.
+
+So we changed it to:
+
+```javascript
+const MONGO_URL = "mongodb://admin:qwerty@mongo:27017";
+```
+
+Here, `mongo` is the name of the MongoDB container.
+
+### Run the Node.js Container
+
+```bash
+docker run -d -p 5050:5050 --network mongo-network docker-testapp
+```
+
+### Test the Application
+
+```text
+http://localhost:5050
+```
+
+API:
+
+```text
+http://localhost:5050/getUsers
+```
+
+### Key Takeaway
+
+The Node.js application is now running inside a Docker container and communicating with MongoDB through the shared `mongo-network`.
+
 

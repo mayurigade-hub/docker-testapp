@@ -258,4 +258,73 @@ Dockerfile → Docker Image → Container → Node.js App
 
 The Node.js container communicates with the MongoDB container through the shared `mongo-network`.
 
+---
+
+# Publishing Docker Image
+
+## What is Publishing?
+
+Publishing means **uploading a Docker image to a Docker Registry**, such as Docker Hub, so it can be shared and pulled from other machines.
+
+## Docker Image Naming
+
+Docker Hub images generally use:
+
+```text
+USERNAME/IMAGE_NAME
+```
+
+Example:
+
+```text
+lifeisveryunfair/testapp
+```
+
+## 1. Build the Image
+
+Instead of using a separate tag command, we can build the image directly with the Docker Hub repository name:
+
+```bash
+docker build -t lifeisveryunfair/testapp .
+```
+
+This creates:
+
+```text
+lifeisveryunfair/testapp:latest
+```
+
+![Docker Build and Push](assets/docker-push.png)
+
+## 2. Login to Docker Hub
+
+```bash
+docker login
+```
+
+This authenticates the Docker CLI with Docker Hub.
+
+## 3. Push the Image
+
+```bash
+docker push lifeisveryunfair/testapp
+```
+
+This uploads the image to the Docker Hub repository.
+
+## 4. Pull the Image
+
+The published image can be downloaded on another machine using:
+
+```bash
+docker pull lifeisveryunfair/testapp
+```
+
+![Docker Hub Repository](assets/docker-hub.png)
+
+## Key Takeaway
+
+> **Build → Login → Push → Pull**
+
+Publishing makes your Docker image available from a Docker Registry like Docker Hub.
 
